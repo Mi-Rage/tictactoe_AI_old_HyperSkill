@@ -7,35 +7,40 @@ public class Player {
     public static Scanner scanner = new Scanner(System.in);
     private static final char X = 'X';
     private static final char O = 'O';
-    private static final int HUMAN = 0;
-    private static final int AI_EASY = 1;
 
+    private final char symbol;
+    private final String level;
 
     /**
-     * Make a move on the playing field with the player's symbol
-     * and the selected level of difficulty
-     * @param gameBoard - this game board
-     * @param symbol - symbol of player
-     * @param level - 0 - HUMAN turn, or AI turn
+     * Object Player constructor with her player symbol and difficulty level
+     * @param symbol - this player symbol (X or O)
+     * @param level - difficulty level (as String "easy", "medium" or "hard")
      */
-    public void makeTurn(GameBoard gameBoard, char symbol, int level) {
+    public Player(char symbol, String level) {
+        this.symbol = symbol;
+        this.level = level;
+    }
+
+    /**
+     * Make a move on the playing field with the selected level of difficulty
+     * @param gameBoard - this game board
+     */
+    public void makeTurn(GameBoard gameBoard) {
         switch (level) {
-            case HUMAN:
-                humanTurn(gameBoard, symbol, level);
+            case "user":
+                humanTurn(gameBoard);
                 break;
-            case AI_EASY:
-                easyAiTurn(gameBoard, symbol, level);
+            case "easy":
+                easyAiTurn(gameBoard);
                 break;
         }
     }
 
     /**
-     * Make a move on the playing field of HUMAN
+     * Make a move on the playing field of user as human
      * @param gameBoard - this game board
-     * @param symbol - symbol of player
-     * @param level - 0 - HUMAN turn, for output of error messages of turn
      */
-    public void humanTurn(GameBoard gameBoard, char symbol, int level) {
+    public void humanTurn(GameBoard gameBoard) {
         while (true) {
             int x;
             int y;
@@ -48,13 +53,13 @@ public class Player {
                     System.out.println("You should enter numbers!");
                     System.out.print("Enter the coordinates: ");
                 } else {
-                    x = 3 -Integer.parseInt(String.valueOf(turn.charAt(2)));
-                    y = Integer.parseInt(String.valueOf(turn.charAt(0))) - 1;
+                    x = Integer.parseInt(String.valueOf(turn.charAt(0))) - 1;
+                    y = Integer.parseInt(String.valueOf(turn.charAt(2))) - 1;
                     break;
                 }
             }
 
-            if (isPossibleTurn(gameBoard, x, y, level)) {
+            if (isPossibleTurn(gameBoard, x, y)) {
                 gameBoard.gameField[x][y] = symbol;
                 break;
             }
@@ -67,17 +72,16 @@ public class Player {
      * @param gameBoard - this game board
      * @param x - coordinates to check
      * @param y - coordinates to check
-     * @param level - 0 - HUMAN turn, else AI level
-     * @return - passed onr not coordinates
+     * @return - boolean, passed onr not coordinates
      */
-    public boolean isPossibleTurn(GameBoard gameBoard, int x, int y, int level) {
+    public boolean isPossibleTurn(GameBoard gameBoard, int x, int y) {
         if (x < 0 || x > GameBoard.getSIZE() - 1 || y < 0 || y > GameBoard.getSIZE() - 1) {
-            if (level == HUMAN) {
+            if (level.equals("user")) {
                 System.out.println("Coordinates should be from 1 to 3!");
             }
             return false;
         } else if (gameBoard.gameField[x][y] == X || gameBoard.gameField[x][y] == O) {
-            if (level == HUMAN) {
+            if (level.equals("user")) {
                 System.out.println("This cell is occupied! Choose another one!");
             }
             return false;
@@ -90,16 +94,14 @@ public class Player {
      * Make a move on the playing field of AI EASY
      * Use random coordinates
      * @param gameBoard - this game board
-     * @param symbol - symbol of player
-     * @param level - for disable output in isPossibleTurn()
      */
-    public void easyAiTurn(GameBoard gameBoard, char symbol, int level) {
+    public void easyAiTurn(GameBoard gameBoard) {
         System.out.println("Making move level \"easy\"");
         while (true) {
             int randomX = (int) (Math.random() * GameBoard.getSIZE());
             int randomY = (int) (Math.random() * GameBoard.getSIZE());
 
-            if (isPossibleTurn(gameBoard, randomX, randomY, level)) {
+            if (isPossibleTurn(gameBoard, randomX, randomY)) {
                 gameBoard.gameField[randomX][randomY] = symbol;
                 break;
             }
