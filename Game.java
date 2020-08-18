@@ -8,9 +8,11 @@ public class Game {
     private static final Scanner scanner = new Scanner(System.in);
     private static String[] command;
 
+    /**
+     * The entire gameplay is here
+     */
     public void start() {
         GameBoard gameBoard = new GameBoard();
-
 
         while (true) {
 
@@ -25,21 +27,28 @@ public class Game {
             gameBoard.initField();
             gameBoard.printField();
 
+            int result;
             while (true) {
                 player1.makeTurn(gameBoard);
                 gameBoard.printField();
-                if (gameBoard.checkField()) {
+                result = gameBoard.checkField();
+                if (result != 0) {
                     break;
                 }
                 player2.makeTurn(gameBoard);
                 gameBoard.printField();
-                if (gameBoard.checkField()) {
+                result = gameBoard.checkField();
+                if (result != 0) {
                     break;
                 }
             }
+            printResult(result);
         }
     }
 
+    /**
+     * Getting the game initialization command
+     */
     public static void getCommand() {
         System.out.print("Input command: ");
 
@@ -53,6 +62,24 @@ public class Game {
             } else {
                 break;
             }
+        }
+    }
+
+    /**
+     * Output the game result to the console
+     * @param result - int, result of the game
+     */
+    public static void printResult(int result) {
+        switch (result) {
+            case 1 :
+                System.out.println("X wins");
+                break;
+            case 2 :
+                System.out.println("O wins");
+                break;
+            case 3 :
+                System.out.println("Draw");
+                break;
         }
     }
 
